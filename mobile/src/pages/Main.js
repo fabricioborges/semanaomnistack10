@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapView from 'react-native-maps';
+import { View, StyleSheet, Image, Text } from 'react-native';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 
-function Main() {
+function Main({ navigation }) {
 
     const [currentRegion, setCurrentRegion] = useState(null);
 
@@ -21,8 +21,8 @@ function Main() {
                 setCurrentRegion({
                     latitude,
                     longitude,
-                    latitudeDelta: 0.04,
-                    longitudeDelta: 0.04,
+                    latitudeDelta: 0.03,
+                    longitudeDelta: 0.03,
                 });
             }
         }
@@ -30,18 +30,57 @@ function Main() {
         loadInitialPosition();
     }, []);
 
-    if(!currentRegion){
+    if (!currentRegion) {
         return null;
     }
 
     return (
-        <MapView initialRegion={currentRegion} style={styles.map} />
+        <MapView initialRegion={currentRegion} style={styles.map}>
+            <Marker coordinate={{ latitude: -27.8211456, longitude: - 50.3114076 }}>
+                <Image style={styles.avatar} source={{ uri: 'https://avatars0.githubusercontent.com/u/38230930?s=460&u=90ceaf3693bdf3a2e52acd1252320c428ab87f5b&v=4' }} />
+                <Callout onPress={() => {
+                    navigation.navigate('Profile', { github_username: 'fabricioborges'})
+                }}>
+                    <View style={styles.callout}>
+                        <Text style={styles.devName}>Fabricio</Text>
+                        <Text style={styles.devBio}></Text>
+                        <Text style={styles.devTechs}></Text>
+                    </View>
+                </Callout>
+            </Marker>
+        </MapView>
     )
 }
 
 const styles = StyleSheet.create({
     map: {
         flex: 1
+    },
+
+    avatar: {
+        width: 54,
+        height: 54,
+        borderRadius: 4,
+        borderWidth: 4,
+        borderColor: '#fff'
+    },
+
+    callout: {
+        width: 260
+    },
+
+    devName: {
+        fontWeight: 'bold',
+        fontSize: 16
+    },
+
+    devBio: {
+        color: '#666',
+        marginTop: 5
+    },
+
+    devTechs: {
+        marginTop: 5
     }
 })
 
